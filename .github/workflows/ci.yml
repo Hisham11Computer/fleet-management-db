@@ -1,0 +1,30 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build database (schema, triggers, seed, views, procedures)
+        shell: bash
+        run: |
+          for f in sql/0*.sql; do
+            echo "== $f"
+            mysql -h 127.0.0.1 -uroot -proot < "$f"
+          done
+      - name: Run test suite
+        shell: bash
+        run: |
+          mysql -h 127.0.0.1 -uroot -proot < tests/test_suite.sql | tee results.txt
+          if grep -q FAIL results.txt; then echo "Some tests failed"; exit 1; fi

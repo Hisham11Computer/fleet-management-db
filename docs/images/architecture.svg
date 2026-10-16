@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" width="960" height="720" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="960" height="720" fill="#ffffff"/>
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="bold" fill="#0f172a">RouteMasterX — System Architecture</text>
+
+  <!-- inputs -->
+  <rect x="40" y="60" width="400" height="70" rx="10" fill="#f1f5f9" stroke="#64748b"/>
+  <text x="240" y="88" text-anchor="middle" font-size="15" font-weight="bold" fill="#0f172a">Telemetry source</text>
+  <text x="240" y="110" text-anchor="middle" font-size="12" fill="#334155">GPS readings (seed: random-walk generator)</text>
+
+  <rect x="520" y="60" width="400" height="70" rx="10" fill="#f1f5f9" stroke="#64748b"/>
+  <text x="720" y="88" text-anchor="middle" font-size="15" font-weight="bold" fill="#0f172a">Operations / clients</text>
+  <text x="720" y="110" text-anchor="middle" font-size="12" fill="#334155">StartTrip · CompleteTrip · AssignShipmentToDriver</text>
+
+  <!-- docker -->
+  <rect x="20" y="150" width="920" height="460" rx="14" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="7 5"/>
+  <text x="36" y="172" font-size="12" font-weight="bold" fill="#64748b">Docker Compose · MySQL 8.0 (InnoDB)</text>
+
+  <!-- rule engine -->
+  <rect x="40" y="185" width="880" height="85" rx="10" fill="#fff7ed" stroke="#f97316"/>
+  <text x="56" y="207" font-size="14" font-weight="bold" fill="#9a3412">Rule engine — triggers</text>
+  <rect x="55" y="218" width="270" height="42" rx="6" fill="#ffffff" stroke="#fdba74"/>
+  <text x="190" y="235" text-anchor="middle" font-size="11" fill="#431407">BEFORE INSERT on Trips</text>
+  <text x="190" y="251" text-anchor="middle" font-size="11" fill="#431407">vehicle / driver must be Available</text>
+  <rect x="345" y="218" width="270" height="42" rx="6" fill="#ffffff" stroke="#fdba74"/>
+  <text x="480" y="235" text-anchor="middle" font-size="11" fill="#431407">AFTER INSERT / UPDATE on Trips</text>
+  <text x="480" y="251" text-anchor="middle" font-size="11" fill="#431407">vehicle &amp; driver status follow the trip</text>
+  <rect x="635" y="218" width="270" height="42" rx="6" fill="#ffffff" stroke="#fdba74"/>
+  <text x="770" y="235" text-anchor="middle" font-size="11" fill="#431407">AFTER INSERT on GPS_Live_Logs</text>
+  <text x="770" y="251" text-anchor="middle" font-size="11" fill="#431407">speed &gt; type limit ⇒ violation</text>
+
+  <!-- storage -->
+  <rect x="40" y="300" width="880" height="110" rx="10" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="56" y="322" font-size="14" font-weight="bold" fill="#1e3a8a">Storage — constraints, CHECKs, generated-column unique keys</text>
+  <g font-size="11" fill="#0f172a" text-anchor="middle">
+    <rect x="55"  y="345" width="112" height="44" rx="6" fill="#fff" stroke="#93c5fd"/><text x="111" y="372">Vehicle_Types</text>
+    <rect x="179" y="345" width="112" height="44" rx="6" fill="#fff" stroke="#93c5fd"/><text x="235" y="372">Vehicles</text>
+    <rect x="303" y="345" width="112" height="44" rx="6" fill="#fff" stroke="#93c5fd"/><text x="359" y="372">Drivers</text>
+    <rect x="427" y="345" width="112" height="44" rx="6" fill="#fff" stroke="#93c5fd"/><text x="483" y="372">Trips</text>
+    <rect x="551" y="345" width="112" height="44" rx="6" fill="#fff" stroke="#93c5fd"/><text x="607" y="372">GPS_Live_Logs</text>
+    <rect x="675" y="345" width="112" height="44" rx="6" fill="#fff" stroke="#93c5fd"/><text x="731" y="372">Speed_Violations</text>
+    <rect x="799" y="345" width="112" height="44" rx="6" fill="#fff" stroke="#93c5fd"/><text x="855" y="372">Shipments</text>
+  </g>
+
+  <!-- logic + views -->
+  <rect x="40" y="445" width="430" height="150" rx="10" fill="#f0fdf4" stroke="#22c55e"/>
+  <text x="56" y="467" font-size="14" font-weight="bold" fill="#166534">Business logic — stored routines</text>
+  <g font-size="12" fill="#14532d">
+    <text x="56" y="495">StartTrip · CompleteTrip</text>
+    <text x="56" y="517">AssignShipmentToDriver (transaction + locking)</text>
+    <text x="56" y="539">Fn_Remaining_Capacity</text>
+    <text x="56" y="561">FindNearestVehicles · VehiclesWithinRadius</text>
+  </g>
+
+  <rect x="490" y="445" width="430" height="150" rx="10" fill="#faf5ff" stroke="#a855f7"/>
+  <text x="506" y="467" font-size="14" font-weight="bold" fill="#6b21a8">Analytics views</text>
+  <g font-size="12" fill="#3b0764">
+    <text x="506" y="495">View_Latest_Vehicle_Positions (ROW_NUMBER)</text>
+    <text x="506" y="517">View_Trip_Distance (LAG + ST_Distance_Sphere)</text>
+    <text x="506" y="539">View_Speeding_Hotspots (1 km grid)</text>
+    <text x="506" y="561">View_Daily_High_Risk_Drivers · View_Driver_Risk_Today</text>
+  </g>
+
+  <!-- consumers -->
+  <g font-size="13" fill="#0f172a" text-anchor="middle">
+    <rect x="40"  y="645" width="280" height="50" rx="10" fill="#f1f5f9" stroke="#64748b"/><text x="180" y="675">BI dashboards / reports</text>
+    <rect x="340" y="645" width="280" height="50" rx="10" fill="#f1f5f9" stroke="#64748b"/><text x="480" y="675">SQL clients (VS Code, Workbench)</text>
+    <rect x="640" y="645" width="280" height="50" rx="10" fill="#f1f5f9" stroke="#64748b"/><text x="780" y="675">Test suite + GitHub Actions CI</text>
+  </g>
+
+  <!-- arrows -->
+  <g stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)">
+    <line x1="240" y1="130" x2="240" y2="184"/>
+    <line x1="720" y1="130" x2="720" y2="184"/>
+    <line x1="480" y1="270" x2="480" y2="299"/>
+    <line x1="255" y1="410" x2="255" y2="444"/>
+    <line x1="705" y1="410" x2="705" y2="444"/>
+    <line x1="180" y1="595" x2="180" y2="644"/>
+    <line x1="480" y1="595" x2="480" y2="644"/>
+    <line x1="780" y1="595" x2="780" y2="644"/>
+  </g>
+  <g font-size="11" fill="#475569">
+    <text x="250" y="160">INSERT readings</text>
+    <text x="730" y="160">CALL procedures</text>
+  </g>
+</svg>

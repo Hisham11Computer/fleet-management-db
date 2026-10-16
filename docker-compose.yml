@@ -1,0 +1,18 @@
+# One command setup:  docker compose up -d
+# The SQL files in ./sql run automatically (alphabetical order) the first time the
+# container starts. Watch progress with:  docker compose logs -f db
+services:
+  db:
+    image: mysql:8.0
+    container_name: routemasterx-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    ports:
+       - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d:ro
+      - ./tests:/tests:ro
+
+volumes:
+  db_data:
