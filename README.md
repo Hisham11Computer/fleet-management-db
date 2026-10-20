@@ -1,6 +1,6 @@
 # 🚚 RouteMasterX — Fleet Management & Logistics Database
 
-
+[![CI](https://github.com/Hisham11Computer/fleet-management-db/actions/workflows/ci.yml/badge.svg)](https://github.com/Hisham11Computer/fleet-management-db/actions)
 
 A MySQL 8 database for a logistics company: fleet, drivers, trips, live GPS telemetry, speed-violation detection, shipment assignment and geospatial analytics. Business rules are enforced **inside the database** (constraints, triggers, transactions) and verified by an automated test suite and CI.
 
